@@ -53,7 +53,7 @@ def typing():
     TYPED_WORD_COUNT += 1
 
 
-# TODO: Make timer rather than using timer
+# FIXME: Make timer rather than using timer
 def get_timer():
     timer_div = driver.find_element(By.ID, "miniTimerAndLiveWpm")
     return timer_div.find_element(By.CLASS_NAME, "time").get_attribute("textContent")

@@ -7,6 +7,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
+# Var
+TARGET_WPM = 420  # Results will not be exact ~+6
+TEST_TIME = 30
+# Get WPM, get percentage of test time, multiply WPM by test time percentage and multiply that by test time to get total words needed for target WPM
+TYPING_SPEED = (TARGET_WPM / 60) * abs(60 - TEST_TIME) - 6  # Seems to be 6 words off on average, this is because I am using the onscreen timer.... EC or start timer on typing()
+TYPED_WORD_COUNT = 0.0
+print(TYPING_SPEED)
+
 # Options
 options = Options()
 # Go fast
@@ -39,10 +47,13 @@ def get_active_word():
 
 
 def typing():
+    global TYPED_WORD_COUNT
     typing_input.send_keys(get_active_word())
     typing_input.send_keys(" ")
+    TYPED_WORD_COUNT += 1
 
 
+# TODO: Make timer rather than using timer
 def get_timer():
     timer_div = driver.find_element(By.ID, "miniTimerAndLiveWpm")
     return timer_div.find_element(By.CLASS_NAME, "time").get_attribute("textContent")
@@ -53,12 +64,8 @@ typing_input = driver.find_element(By.ID, "wordsInput")
 
 
 while True:
-    # Final count is for the last 1 second since there is no tenths of a second and zero never shows
-    final_count = 0
-    if get_timer() != "1":
-        final_count += 1
-        if final_count < 6:
-            typing()
+    if TYPED_WORD_COUNT != TYPING_SPEED:
+        typing()
     else:
         break
 
@@ -66,4 +73,4 @@ while True:
 wpm = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "bottom"))).text
 
 input(f"wpm: {wpm}\nPress enter to quit: ")
-driver.close()
+driver.quit()

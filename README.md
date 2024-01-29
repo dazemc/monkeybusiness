@@ -1,4 +1,4 @@
-# monkeybuisness
+# monkeybusines
 monkeytype.com typing bot
 
 For fun
